@@ -1,0 +1,42 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ScoutBot</title>
+  <link rel="stylesheet" href="/static/style.css"/>
+</head>
+<body>
+  <div id="chat-bubble" onclick="toggleChat()">💬</div>
+  <div id="chat-box">
+    <div id="chat-header">ScoutBot</div>
+    <div id="chat-content"></div>
+    <div id="chat-input">
+      <input type="text" id="user-input" placeholder="Ask me anything..." onkeydown="if(event.key==='Enter')sendMessage()"/>
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+  <script>
+    function toggleChat() {
+      document.getElementById('chat-box').classList.toggle('open');
+    }
+    async function sendMessage() {
+      let input = document.getElementById('user-input');
+      let question = input.value.trim();
+      if(!question) return;
+      let content = document.getElementById('chat-content');
+      content.innerHTML += "<div class='user-msg'>" + question + "</div>";
+      input.value = "";
+      const res = await fetch('/ask', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({question})
+      });
+      const data = await res.json();
+      content.innerHTML += "<div class='bot-msg'>" + data.answer + "</div>";
+      content.scrollTop = content.scrollHeight;
+    }
+  </script>
+</body>
+</html>

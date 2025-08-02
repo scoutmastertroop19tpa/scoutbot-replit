@@ -1,0 +1,6 @@
+
+flask
+openai
+chromadb
+bs4
+requests
